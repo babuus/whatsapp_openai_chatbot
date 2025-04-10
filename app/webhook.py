@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from app.whatsapp_client import WhatsAppClient
 
 app = FastAPI()
-
+wtsapp_client = WhatsAppClient()
 WHATSAPP_HOOK_TOKEN = os.environ.get("WHATSAPP_HOOK_TOKEN")
 
 @app.get("/")
@@ -20,15 +20,17 @@ def subscribe(request: Request):
 
 @app.post("/webhook/")
 async def process_notifications(request: Request):
-    wtsapp_client = WhatsAppClient()
+    print("input request")
     data = await request.json()
     print ("We received " + str(data))
-    response = wtsapp_client.process_notification(data)
-    if response["statusCode"] == 200:
-        if response["body"] and response["from_no"]:
-            reply = f"Automated message, {response['body']}"
-            print ("\nreply is:"  + reply)
-            wtsapp_client.send_text_message(message=reply, phone_number=response["from_no"], )
-            print ("\nreply is sent to whatsapp cloud:" + str(response))
-
-    return jsonable_encoder({"status": "success"}, 200)
+    try:
+        response = wtsapp_client.process_notification(data)
+        if response["statusCode"] == 200:
+            if response["body"] and response["from_no"]:
+                reply = f"Automated message, {response['body']}"
+                print ("\nreply is:"  + reply)
+                wtsapp_client.send_text_message(message=reply, phone_number=response["from_no"], )
+                print ("\nreply is sent to whatsapp cloud:" + str(response))
+    except Exception as err:
+        print("ERR--->", err)
+    return {"status": "success"}

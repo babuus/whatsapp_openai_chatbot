@@ -2,21 +2,22 @@ import os
 import requests
 import json
 
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
+API_URL = "https://graph.facebook.com/v15.0/"
+WHATSAPP_API_TOKEN = os.environ.get("WHATSAPP_API_TOKEN")
+WHATSAPP_CLOUD_NUMBER_ID = os.environ.get("WHATSAPP_CLOUD_NUMBER_ID")
 
 class WhatsAppClient:
-
-    API_URL = "https://graph.facebook.com/v15.0/"
-    WHATSAPP_API_TOKEN = os.environ.get("WHATSAPP_API_TOKEN")
-    WHATSAPP_CLOUD_NUMBER_ID = os.environ.get("WHATSAPP_CLOUD_NUMBER_ID")
-
     def __init__(self):
+        print("<=init=>", WHATSAPP_API_TOKEN)
         self.headers = {
-            "Authorization": f"Bearer {self.WHATSAPP_API_TOKEN}",
+            "Authorization": f"Bearer {WHATSAPP_API_TOKEN}",
             "Content-Type": "application/json",
         }
-        self.API_URL = self.API_URL + self.WHATSAPP_CLOUD_NUMBER_ID
+        
+        self.API_URL = API_URL + WHATSAPP_CLOUD_NUMBER_ID
+        print("done init")
 
     def send_template_message(self, template_name, language_code, phone_number):
 
@@ -85,10 +86,10 @@ class WhatsAppClient:
 
 
 
-if __name__ == "__main__":
-    client = WhatsAppClient()
-    # send a template message
-    client.send_template_message("hello_world", "en_US", "201012345678")
+# if __name__ == "__main__":
+#     client = WhatsAppClient()
+#     # send a template message
+#     client.send_template_message("hello_world", "en_US", "201012345678")
     
     
     
