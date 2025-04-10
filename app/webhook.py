@@ -27,8 +27,7 @@ async def process_notifications(request: Request):
     response = wtsapp_client.process_notification(data)
     if response["statusCode"] == 200:
         if response["body"] and response["from_no"]:
-            openai_client = OpenAIClient()
-            reply = openai_client.complete(prompt=response["body"])
+            reply = f"Automated message, {response['body']}"
             print ("\nreply is:"  + reply)
             wtsapp_client.send_text_message(message=reply, phone_number=response["from_no"], )
             print ("\nreply is sent to whatsapp cloud:" + str(response))
